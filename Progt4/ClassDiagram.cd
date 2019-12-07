@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Prog4::magic">
+    <Position X="7" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAACAAAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>defbuild.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Prog4::towlevel" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>defbuild.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Prog4::magictrap" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>defbuild.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Prog4::tower" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>defbuild.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Prog4::magictower" Collapsed="true">
+    <Position X="1.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>defbuild.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Prog4::defbuilding&lt;T&gt;">
+    <Position X="7" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAgAAAAAAQAAAAAAFAAAAACAAAAAQAIAA=</HashCode>
+      <FileName>defbuild.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Prog4::point">
+    <Position X="8.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAACAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAAAAA=</HashCode>
+      <FileName>point.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Prog4::cell">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAEAAAAAAABBAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>cell.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Prog4::board">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgCAAIAAAAAAAECACIAAAAAACAAAAgEAIAAwAAAAAAA=</HashCode>
+      <FileName>board.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Prog4::charact">
+    <Position X="5.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAQAAAAAACAAAAAAAAAAAAAAEAAAAAAAAQAEAAAg=</HashCode>
+      <FileName>units.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Prog4::enemy">
+    <Position X="4" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAIAAAAQAAAAAIBAAQAAAAAAAAAAAAI=</HashCode>
+      <FileName>units.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Prog4::castle">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACACAAAAAAACAAAAAAAAAABCAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>units.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
