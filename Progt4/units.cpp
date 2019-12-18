@@ -2,6 +2,7 @@
 #include "board.h"
 #include "point.h"
 #include <vector>
+//#include "myvec.h"
 
 
 using namespace std;
@@ -17,7 +18,7 @@ namespace Prog4
 	}
 
 	
-	int enemy::go(board &a, vector <defbuilding<magictrap>> &b)
+	int enemy::go(board &a, vector <defbuilding> &b, castle cast)
 	{
 		int x, y;
 		x = coord.x;
@@ -42,49 +43,27 @@ namespace Prog4
 			}
 		}
 		tab.health -= eff.poison;
-		time = speed;
+		time = speed+eff.slowdown;
 		for (unsigned int i = 0; i < b.size(); i++)
 		{
-			int g = b[i].level;
-			magictrap k = b[i].lev[g];
-			if (coord.dist(b[i].coord) <= k.rad)
-				eff += k.eff;
+			int g = b[i].level-1;
+			magic k = b[i].lev[g]->geteff();
+			if (coord.dist(b[i].coord) <= b[i].lev[g]->rad)
+				eff += k;
 		}
 		if (tab.health <= 0)
+		{
 			return 0;
+		}
 		return 1;
 	}
 
-	void castle:: buy(defbuilding <tower> a)
+	void castle:: buy(defbuilding a)
 	{
 		int l = a.getlevel();
-		if (tab.gold >= a.lev[l+1].cost)
+		if (tab.gold >= a.lev[l]->cost)
 		{
-			tab.gold -= a.lev[l+1].cost;
-			a.lvlup();
-		}
-		else
-			throw std::exception("You don't have that much gold");
-	}
-
-	void castle::buy(defbuilding <magictower> a)
-	{
-		int l = a.getlevel();
-		if (tab.gold >= a.lev[l + 1].cost)
-		{
-			tab.gold -= a.lev[l + 1].cost;
-			a.lvlup();
-		}
-		else
-			throw std::exception("You don't have that much gold");
-	}
-
-	void castle::buy(defbuilding <magictrap> a)
-	{
-		int l = a.getlevel();
-		if (tab.gold >= a.lev[l + 1].cost)
-		{
-			tab.gold -= a.lev[l + 1].cost;
+			tab.gold -= a.lev[l]->cost;
 			a.lvlup();
 		}
 		else
@@ -97,11 +76,10 @@ namespace Prog4
 		return tab.health;
 	}
 
-	template<class T>
-	defbuilding<T> board::findtower(vector <defbuilding<T>> &v1, int x, int y)
+	defbuilding board::findtower(vector <defbuilding> &v1, int x, int y)
 	{
 		point c(x, y);
-		defbuilding<T> k;
+		defbuilding k;
 		for (int k = 0; k < v1.size(); k++)
 		{
 			if (v1[k].getcoord() == c)

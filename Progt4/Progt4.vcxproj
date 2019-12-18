@@ -117,8 +117,8 @@
   <ItemGroup>
     <ClInclude Include="board.h" />
     <ClInclude Include="cell.h" />
-    <ClInclude Include="charact.h" />
     <ClInclude Include="defbuild.h" />
+    <ClInclude Include="myvec.h" />
     <ClInclude Include="mymap.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="units.h" />

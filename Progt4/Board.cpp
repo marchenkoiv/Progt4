@@ -5,7 +5,7 @@
 //4-логово
 //5-башня
 
-
+//#include "myvec.h"
 #include "units.h"
 #include <windows.h> 
 
@@ -118,7 +118,7 @@ namespace Prog4
 		m = size.y - 3 - std::rand() % (size.y) / 4;
 		for (int i = 0; i < k; i++)
 		{
-			t = std::rand() % (size.x);
+			t = std::rand() % (size.x-1);
 			if (field[t][size.y - 1].type != 4)
 				c++;
 			field[t][size.y - 1].type = 4;
@@ -270,7 +270,7 @@ namespace Prog4
 		return { i, size.y - 1 };
 	}
 
-	void board::printall(vector <defbuilding<tower>> &v1, vector <defbuilding<magictower>> &v2, vector <defbuilding<magictrap>> &v3, vector <enemy> &env) const
+	void board::printall(vector <defbuilding> &v1, vector <defbuilding> &v2, vector <defbuilding> &v3, vector <enemy> &env) const
 	{
 		HANDLE hConsole;
 		hConsole = GetStdHandle(STD_OUTPUT_HANDLE);

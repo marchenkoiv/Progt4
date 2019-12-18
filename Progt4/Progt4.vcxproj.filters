@@ -30,10 +30,10 @@
     <ClInclude Include="point.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="charact.h">
+    <ClInclude Include="mymap.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="mymap.h">
+    <ClInclude Include="myvec.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

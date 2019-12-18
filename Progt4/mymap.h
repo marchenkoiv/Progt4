@@ -2,46 +2,71 @@
 #ifndef _map_
 #define _map_
 
-#include<iostream>
+#include<stdio.h>
 
 
 namespace Prog4
 {
 	template <typename T, typename G>
-	class mymapit;
-
-	template <typename T, typename G>
-	class mymap
+	struct Node
 	{
-	private:
-		using Node = mymap<T, G>;
 		int color;
-		T key;
+		const T *key;
 		struct Node *left, *right;
 		struct Node *parent;
 		G *inf;
-		Node elist = { 1, 0, nullptrptr, nullptrptr, nullptrptr };
-		Node *EList = &elist;
-		Node **root = EList;
+
+		void operator =(const Node<T, G>& k);
+		bool operator ==(const Node<T, G>& k);
+		bool operator !=(const Node<T, G>& k);
+		//void operator =(const Node<T, G> k);
+	};
+
+	template <class T, class G>
+	class map
+	{
+	private:
+		Node<T, G> elist = { 1, nullptr, nullptr, nullptr, nullptr };
+		Node<T, G> *EList = &elist;
+		Node<T, G> **Root = &EList;
 
 
 
 	public:
-		friend class mymapit<T,G>;
-		Node() : color(1), key(0), left(nullptr), right(nullptr), parent(nullptr), inf(nullptr) {};
-		~mymap() { FreeTree(**root); }
-		typedef mymapit<T, G> Iterator;
+		map() {};
+		~map() {  };
+		void Left_rotate(Node<T, G> *x, Node<T, G>*root);
+		void Right_rotate(Node<T, G>*x, Node<T, G>*root);
+		int RB_Insert(Node<T, G>*x, Node<T, G>**root);
+		void RB_Insert_Fixup(Node<T, G>*x, Node<T, G>**root);
+		//int D_Add(Node<T, G>**root);
+		G& operator [](const T& k);
+		int RB_Delete(Node<T, G>*x, Node<T, G>**root);
+		int RB_Delete_Fixup(Node<T, G>*x, Node<T, G>**root);
+		Node<T, G>* maximum( Node<T, G>x = **root) const;
+		Node<T, G>* minimum( Node<T, G>x = **root) const;
+		Node<T, G>* next(Node<T, G>x) const;
+		Node<T, G>* prev(Node<T, G>x) const;
+		int erase(T k);
+		int size();
+		Node<T, G>find(T& k) const;
+		G* findel(T k) const;
+		int near(int k, Node<T, G>** root, Node<T, G>** rc);
+		//int D_Near( Node<T, G>**root);
+		void FreeTree(Node<T, G>* tree);
+		void operator =(const map<T, G>& k);
+	};
 
-
-		void Left_rotate(Node *x)
+	template<class T, class G>
+		void map<T, G>:: Left_rotate(Node<T, G> *x, Node<T, G> *root)
 		{
-			Node *y = x->right, *p = x->parent;
+			Node<T, G>*y = x->right, *p = x->parent;
 			x->right = y->left;
 			if (y->left != EList)
 				y->left->parent = x;
 			y->parent = p;
 			if (p == EList)
-				*root = y;
+				root = y;
 			else
 			{
 				if (p->left == x)
@@ -53,15 +78,16 @@ namespace Prog4
 			x->parent = y;
 		}
 
-		void Right_rotate(Node *x)
+		template<class T, class G>
+		void map<T, G>::Right_rotate(Node<T, G> *x, Node<T, G> *root)
 		{
-			Node *y = x->left, *p = x->parent;
+			Node<T, G>*y = x->left, *p = x->parent;
 			x->left = y->right;
 			if (y->right != EList)
 				y->right->parent = x;
 			y->parent = p;
 			if (p == EList)
-				*root = y;
+				root = y;
 			else
 			{
 				if (p->right == x)
@@ -73,9 +99,10 @@ namespace Prog4
 			x->parent = y;
 		}
 
-		int RB_Insert(Node *x)
+		template<class T, class G>
+		int map<T, G>::RB_Insert(Node<T, G> *x, Node<T, G> **root)
 		{
-			Node *prev = EList, *ptr = *root;
+			Node<T, G>*prev = EList, *ptr = *root;
 
 			while (ptr != EList)
 			{
@@ -90,7 +117,7 @@ namespace Prog4
 			x->parent = prev;
 			if (prev == EList)
 			{
-				*root = x;
+				Root = &x;
 				x->left = EList;
 				x->right = EList;
 				x->color = 1;
@@ -107,13 +134,14 @@ namespace Prog4
 			x->left = EList;
 			x->right = EList;
 			x->color = 0;
-			RB_Insert_Fixup(x, root);
+			RB_Insert_Fixup(x, Root);
 			return 0;
 		}
 
-		void RB_Insert_Fixup(Node *x, Node **root)
+		template<class T, class G>
+		void map<T, G>::RB_Insert_Fixup(Node<T, G> *x, Node<T, G> **root)
 		{
-			Node *p1, *pp, *p2;
+			Node<T, G>*p1, *pp, *p2;
 			while (x->parent->color == 0)
 			{
 				p1 = x->parent;
@@ -169,16 +197,16 @@ namespace Prog4
 			{
 				x = x->parent;
 			}
-			*root = x;
-			(*root)->color = 1;
+			Root = &x;
+			(*Root)->color = 1;
 		}
 
 
-
-		int D_Add(Table *ptab, Node **root)
+		/*template<class T, class G>
+		int map<T, G>::D_Add( map **root)
 		{
 			int k, rc, n;
-			Node *x = (Node*)malloc(sizeof(Node));
+			map *x = (map*)malloc(sizeof(map));
 			G *info = nullptr;
 			printf("Enter key: -->");
 			n = getInt(&k);
@@ -206,25 +234,66 @@ namespace Prog4
 				rc = 2;
 			printf("%s: %d\n", errmsg[rc], k);
 			return 1;
-		}
+		}*/
 
-
-		G& operator [](const T& k)
+		template<class T, class G>
+	    G& map<T, G>:: operator [](const T& k)
 		{
-			Node *ptr = begin(*root);
-			while (ptr != end(*root))
+			const T *ky = &k;
+			Node<T, G> add = { 1, &k, EList, EList, EList, new G };
+			if (*Root == EList)
 			{
-				if (ptr->key == k)
-					return ptr->inf;
-				ptr = next(ptr);
+				RB_Insert(&add, Root);
+				G* f= findel(k);
+				return  *f;
 			}
-			return nullptr;
+			Node<T, G>*ptr = maximum(**Root);
+			do 
+			{
+				if (*ptr->key == k)
+					return *(ptr->inf);
+				ptr = next(*ptr);
+			} while (ptr != minimum(**Root));
+			RB_Insert(&add, Root);
+			G* f = findel(k);
+			return *f;
 		}
 
-
-		int RB_Delete(Node*x, Node **root)
+		template<class T, class G>
+		void map<T, G>:: operator =(const map<T, G>& k)
 		{
-			Node *y = (Node*)malloc(sizeof(Node)), *p = (Node*)malloc(sizeof(Node));
+			if (this != &k)
+			{
+				FreeTree(*Root);
+				Node<T, G>*p = maximum(**k.Root);
+				do
+				{
+
+					Node<T, G>*ptr = new Node<T, G>;
+					ptr->key = p->key;
+					*ptr->inf = *p->inf;
+					RB_Insert(ptr, Root);
+					p = next(*p);
+				} while (p != minimum(**Root));
+			}
+		}
+		template<class T, class G>
+		void Node<T, G>:: operator =(const Node<T, G>& k)
+		{
+			key = k.key;
+			color = k.color;
+			inf = k.inf;
+			left = k.left;
+			right = k.right;
+			parent = k.parent;
+		}
+
+	
+
+		template<class T, class G>
+		int map<T, G>::RB_Delete(Node<T, G> *x, Node<T, G> **root)
+		{
+			Node<T, G>*y = (Node*)malloc(sizeof(Node)), *p = (Node*)malloc(sizeof(Node));
 			if (x->left == EList || x->right == EList)
 				y = x;
 			else
@@ -252,9 +321,10 @@ namespace Prog4
 			return 1;
 		}
 
-		int RB_Delete_Fixup(Node *x, Node **root)
+		template<class T, class G>
+		int map<T, G>::RB_Delete_Fixup(Node<T, G> *x, Node<T, G> **root)
 		{
-			Node *p, *w;
+			Node<T, G>*p, *w;
 			while (x != *root && x->color == 1)
 			{
 				p = x->parent;
@@ -331,70 +401,81 @@ namespace Prog4
 			return 1;
 		}
 
-		Iterator begin(Node x = **root)
+
+		template<class T, class G>
+		Node<T, G>* map<T, G>::maximum( Node<T, G> x) const
 		{
-			if (x.left == EList)
-				return x;
-			return begin(*x.left);
+			
+			if (x.left == nullptr || x.left == EList)
+				return &x;
+			return maximum(*x.left);
 		}
 
-		Iterator end(Node x = **root)
+		template<class T, class G>
+		Node<T, G>* map<T, G>::minimum( Node<T, G> x) const
 		{
-			if (x.right == EList)
-				return x;
-			return end(*x.right);
+			if (x.right == nullptr || x.right == EList)
+				return &x;
+			return minimum(*x.right);
 		}
 
-		Iterator next(Node x)
+		template<class T, class G>
+		Node<T, G>* map<T, G>::next(Node<T, G> x) const
 		{
-			Node* y;
+			Node<T, G>* y;
 			if (x.right != EList)
-				return begin(*x.right);
+				return maximum(*x.right);
 			y = x.parent;
 			while (y != EList && &x == y->right)
 				x = *y;
 			y = y->parent;
-			return *y;
+			return y;
 		}
 
-		Node prev(Node x)
+		template<class T, class G>
+		Node<T, G>* map<T, G>::prev(Node<T, G> x) const
 		{
-			Node* y;
+			Node<T, G>* y;
 			if (x.left != EList)
-				return end(*x.right);
+				return minimum(*x.right);
 			y = x.parent;
 			while (y != EList && &x == y->left)
 				x = *y;
 			y = y->parent;
-			return *y;
+			return y;
 		}
 
-		int erase(T k)
+		template<class T, class G>
+		int map<T, G>::erase(T k)
 		{
-			d = findel(k);
+			Node<T, G>d;
+			d = find(k);
 			if (d != nullptr)
-				RB_Delete(d, root);
+				RB_Delete(d, Root);
 			return 1;
 		}
 
-		int size()
+
+		template<class T, class G>
+		int map<T, G>::size()
 		{
 			int k = 0;
-			Node *ptr = begin(*root);
+			Node<T, G>*ptr = maximum(**Root);
 			if (ptr != nullptr)
 				k++;
-			while (ptr != end(*root))
+			while (ptr != minimum(**Root))
 			{
 				k++;
-				ptr = next(ptr);
+				ptr = next(*ptr);
 			}
 			return k;
 		}
 
-		Iterator find(T& k) const
+		template<class T, class G>
+		Node<T, G> map<T, G>::find(T& k) const
 		{
-			Node *ptr = begin(*root);
-			while (ptr != end(*root))
+			Node<T, G>*ptr = maximum(*Root);
+			while (ptr != minimum(*Root))
 			{
 				if (ptr->key == k)
 					return ptr;
@@ -403,9 +484,24 @@ namespace Prog4
 			return nullptr;
 		}
 
-		int near(int k, Node** root, Node** rc)
+		template<class T, class G>
+		G* map<T, G>::findel(T k) const
 		{
-			Node *ptr = *root;
+			Node<T, G>*ptr = maximum(**Root);
+			do
+			{
+				if (*ptr->key == k)
+					return ptr->inf;
+				ptr = next(*ptr);
+			} while (ptr != minimum(**Root));
+			return nullptr;
+		}
+
+
+		template<class T, class G>
+		int map<T, G>::near(int k, Node<T, G>** root, Node<T, G>** rc)
+		{
+			Node<T, G>*ptr = *root;
 			if (ptr == EList)
 				return 1;
 			near(k, &ptr->left, rc);
@@ -415,11 +511,11 @@ namespace Prog4
 			return 0;
 		}
 
-
-		int D_Near(Table *ptab, Node **root)
+		/*template<class T, class G>
+		int map<T, G>::D_Near( map **root)
 		{
 			int k, rc, n;
-			Node *info = (Node*)malloc(sizeof(Node));
+			map *info = (map*)malloc(sizeof(map));
 			info->key = INT_MAX;
 			printf("Enter key: -->");
 			n = getInt(&k);
@@ -432,20 +528,40 @@ namespace Prog4
 			ptab->first[info->key%ptab->SZ].info = info;
 			ptab->first[info->key%ptab->SZ].key = info->key;
 			return 1;
-		}
+		}*/
 
-		void FreeTree(Node * tree)
+		template<class T, class G>
+		void map<T, G>::FreeTree(Node<T, G> *tree)
 		{
-			if (tree->left != EList)
+			if (*tree == *EList)
+				return;
+			if (*tree->left != *EList)
 				FreeTree(tree->left);
-			if (tree->right != EList)
+			if (*tree->right != *EList)
 				FreeTree(tree->right);
 			delete tree;
 		}
-	};
+	
+		template<class T, class G>
+		bool Node<T, G>:: operator ==(const Node<T, G>& k)
+		{
+			if (key == k.key && inf == k.inf && color == k.color && parent == k.parent && left == k.left && right == k.right)
+				return true;
+			else
+				return false;
+		}
+
+		template<class T, class G>
+		bool Node<T, G>:: operator !=(const Node<T, G>& k)
+		{
+			if (key == k.key && inf == k.inf && color == k.color && parent == k.parent && left == k.left && right == k.right)
+				return false;
+			else
+				return true;
+		}
 
 
-	template <class T, class G>
+	/*template <class T, class G>
 	class AssocIt {
 	private:
 
@@ -454,25 +570,25 @@ namespace Prog4
 
 	public:
 
-		mymapit() :key(nullptr), inf(nullptr) { };
-		mymapit(T a, G *b) :key(a), inf(b) { };
-		int operator !=(const mymapit<T, G> &it) const
+		mapit() :key(nullptr), inf(nullptr) { };
+		mapit(T a, G *b) :key(a), inf(b) { };
+		int operator !=(const mapit<T, G> &it) const
 		{
 			return key != it.key;
 		}
-		int operator ==(const mymapit<T, G> &it) const
+		int operator ==(const mapit<T, G> &it) const
 		{
 			return key == it.key;
 		}
-		mymapit<T, G>& operator ++()
+		mapit<T, G>& operator ++()
 		{
 
 			this.next();
 			return
 		}
-		mymapit<T, G> operator ++(int);
+		mapit<T, G> operator ++(int);
 
-	};
+	};*/
 
 }
 

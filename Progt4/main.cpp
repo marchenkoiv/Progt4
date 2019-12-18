@@ -7,24 +7,43 @@
 #include <ctime>
 #include <stdlib.h>
 #include <conio.h>
+//#include "myvec.h"
+//#include <SDL2/SDL.h>
 
-using namespace std;
+using std::string;
+using std::map;
+using std::cout;
+using std::cin;
+using std::endl;
+using std::vector;
 using namespace Prog4;
 
-charact castle::stcast("Kemerovo", 500, 500, 200);
-charact enemy::sten("dog", 20, 20, 1);
+charact castle::stcast("TTT", 500, 500, 200);
+charact enemy::sten("dog", 20, 20, 5);
 
 int main()
 {
+	/*if (SDL_Init(SDL_INIT_EVERYTHING) != 0) 
+	{
+		std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
+		return 1;
+	}
+
+	SDL_Window *min = SDL_CreateWindw(); SDL_Window *win = SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
+	if (win == nullptr) 
+	{
+		std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
+		return 1;
+	}*/
+
 
 	srand(time(0));
 	int bb = 1;
-	vector <defbuilding<tower>> v1;
-	vector <defbuilding<magictower>> v2;
-	vector <defbuilding<magictrap>> v3;
-	vector <dungeon> dun;
+	vector <defbuilding> v1;
+	vector <defbuilding> v2;
+	vector <defbuilding> v3;
 	vector <enemy> env;
-	dungeon dd({0, 0});
+	dungeon dd({ 0, 0 });
 	int x, y;
 	int e = 20;
 	int w = 0;
@@ -39,10 +58,16 @@ int main()
 	board br(p);
 	br.rand();
 	br.printfield();
+	tower v11;
+	magictower v22;
+	magictrap v33;
 	castle cast = { br.findcast(), cast.getstcast() };
-	defbuilding<tower> a, a1;
-	defbuilding<magictower> b, b1;
-	defbuilding<magictrap> c, c1;
+	defbuilding a, a1;
+	defbuilding b, b1;
+	defbuilding c, c1;
+	defbuilding *gr;
+	std::vector <dungeon> dun;
+	int de = 0;
 	do
 	{
 		switch (bb)
@@ -68,16 +93,16 @@ int main()
 					std::cin >> k;
 				}
 			}
-			c.setlevels(k);
-			a.setlevels(k);
-			b.setlevels(k);
+			a.setlevels(k, &v11);
+			b.setlevels(k, &v22);
+			c.setlevels(k, &v33);
 			break;
 		case 2:
 			cout << "Enter coordinates (size of board is ";
 			br.printsize();
-			cout<< ")" << endl;
-			cin >> x>>y;
-			while (!std::cin.good() || x<1 || y<1 || x>=br.getsizex()+1 || y >= br.getsizey() + 1)
+			cout << ")" << endl;
+			cin >> x >> y;
+			while (!std::cin.good() || x < 1 || y < 1 || x >= br.getsizex() + 1 || y >= br.getsizey() + 1)
 			{
 				if (!std::cin.good())
 				{
@@ -96,18 +121,20 @@ int main()
 			}
 			x--;
 			y--;
-			a = { x, y };
+			gr = new defbuilding;
+			a.setcoord({ x, y });
 			try
 			{
 				br.addtower({ x, y });
 				cast.buy(a);
+				*gr = a;
 			}
 			catch (const std::exception &ex)
 			{
 				std::cout << ex.what() << std::endl;
 				break;
 			}
-			v1.push_back(a);
+			v1.push_back(*gr);
 			break;
 		case 3:
 			cout << "Enter coordinates (size of board is ";
@@ -133,18 +160,21 @@ int main()
 			}
 			x--;
 			y--;
-			b = { x, y };
+			gr = new defbuilding;
+			b.setcoord({ x, y });
+			b.setlevels(k, &v22);
 			try
 			{
 				br.addtower({ x, y });
 				cast.buy(b);
+				*gr = b;
 			}
 			catch (const std::exception &ex)
 			{
 				std::cout << ex.what() << std::endl;
 				break;
 			}
-			v2.push_back(b);
+			v2.push_back(*gr);
 			break;
 		case 4:
 			cout << "Enter coordinates (size of board is ";
@@ -170,24 +200,26 @@ int main()
 			}
 			x--;
 			y--;
-			c = { x, y };
+			gr = new defbuilding;
+			c.setcoord({ x, y });
 			try
 			{
 				br.addtower({ x, y });
 				cast.buy(c);
+				*gr = c;
 			}
 			catch (const std::exception &ex)
 			{
 				std::cout << ex.what() << std::endl;
 			}
-			v3.push_back(c);
+			v3.push_back(*gr);
 			break;
 		case 5:
 			br.printall(v1, v2, v3, env);
 			break;
 		case 6:
 			cin >> e;
-			while (!std::cin.good() || e<1 )
+			while (!std::cin.good() || e < 1)
 			{
 				if (std::cin.eof())
 					return 0;
@@ -211,9 +243,11 @@ int main()
 				dd.setcoord(pp);
 				for (int i = 0; i < e; i++)
 				{
-					enemy en(pp, 5);
-					en.settab();
-					dd.setmap(i, en, i*10+1);
+					enemy *en=new enemy;
+					enemy ene(pp, 5);
+					*en = ene;
+					en->settab();
+					dd.setmap(i, *en, i * 10 + 1);
 				}
 				dun.push_back(dd);
 			}
@@ -234,39 +268,83 @@ int main()
 						}
 					}
 				}
+				for (int i = 0; i < v1.size(); i++)
+				{
+
+					int q = -1;
+					v1[i].settime(-1);
+					if (v1[i].gettime() == 0)
+					{
+						q=v1[i].shot(env, cast);
+						v1[i].settime(25 / v1[i].getrate());
+						if (q == 2)
+						{
+							cast.addgold(env[i].getgold());
+							env.erase(env.begin()+=i );
+							de++;
+						}
+					}
+				}
+				for (int i = 0; i < v2.size(); i++)
+				{
+					int q = -1;
+					v2[i].settime(-1);
+					if (v2[i].gettime() == 0)
+					{
+						q=v2[i].shot(env, cast);
+						v2[i].settime(25 / v2[i].getrate());
+					}
+					if (q == 2)
+					{
+						cast.addgold(env[i].getgold());
+						env.erase(env.begin()+=i );
+						de++;
+					}
+				}
 				for (int i = 0; i < env.size(); i++)
 				{
+					int q = -1;
 					env[i].settime(1);
-					if(env[i].gettime()==0)
-						env[i].go(br, v3);
+					if (env[i].gettime() == 0)
+						q = env[i].go(br, v3, cast);
+
 					t = cast.getx();
-					p1 = {t+1, 0};
+					p1 = { t + 1, 0 };
 					p1 = { t , 1 };
 					p1 = { t - 1, 0 };
-					if (env[i].getcoord()== p1 || env[i].getcoord() == p2 || env[i].getcoord() == p3)
+					if (env[i].getcoord() == p1 || env[i].getcoord() == p2 || env[i].getcoord() == p3)
 					{
 						cast.takedamage(env[i]);
-						env.erase(env.begin()+i);
+						env.erase(env.begin()+=i);
+					}
+					if (q == 0)
+					{
+						cast.addgold(env[i].getgold());
+						env.erase(env.begin()+=i);
+						de++;
 					}
 
 				}
 				system("cls");
 				br.printall(v1, v2, v3, env);
+				cout << "Your gold: " << cast.getgold() << endl;
+				cout << "Number of enemies: " << env.size() << endl;
+				cout << "Dead enemies: " << de << endl;
 				if (_kbhit())
 				{
 					int c = _getch();
 					if (c == 0x1B) break;
 				}
 			} while (cast.gethealth() > 0 && env.empty() == false);
-			if(cast.gethealth() <= 0)
-				std::cout << "You lose"<<std::endl;
+			if (cast.gethealth() <= 0)
+				std::cout << "You lose" << std::endl;
 			else
-				std::cout << "You win";
+				std::cout << "You win"<< std::endl;
 			break;
 		case 8:
 			cout << "Enter coordinates of tower";
 			cin >> x >> y;
-			while (!std::cin.good() || x < 1 || y<1)
+			while (!std::cin.good() || x < 1 || y < 1)
 			{
 				if (std::cin.eof())
 					return 0;
@@ -314,6 +392,6 @@ int main()
 			std::cin >> bb;
 		}
 	} while (bb != 0);
-	
+
 	return 0;
 }

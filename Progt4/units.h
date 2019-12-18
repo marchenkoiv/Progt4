@@ -6,8 +6,10 @@
 #include "cell.h"
 #include "point.h"
 #include "defbuild.h"
-#include <map> 
+//#include "mymap.h"
+#include <map>
 #include <vector>
+//#include "myvec.h"
 using std::string;
 using std::map;
 using std::vector;
@@ -58,11 +60,23 @@ namespace Prog4
 		void setspeed(int t) { speed = t; }
 		void settime(int t) { time-=t; }
 		void settab() { tab = sten; }
+		void settab1(charact a) { tab = a; }
+		void seteff(magic a) { eff = a; }
+		void subhealth(int a) { tab.health -= a; };
+		int getgold() { return tab.getgold(); }
+		int gethealth() { return tab.health; };
+		int getweaking() { return eff.weaking; }
+		magic geteff() { return eff; };
 		point getcoord() { return coord; }
+		int getx() { return coord.getx(); }
+		int gety() { return coord.gety(); }
 		int gettime() { return time; }
+		int getspeed() { return speed; }
+		int getmaxhealth() { return tab.maxhealth; }
+		string getname() { return tab.getname(); }
 		friend class castle;
 		friend class board;
-		int go(board &, vector <defbuilding <magictrap> > &b);
+		int go(board &, vector <defbuilding > &b, castle);
 	};
 
 	class castle
@@ -75,17 +89,16 @@ namespace Prog4
 		castle() : coord(0, 0), tab() {};
 		castle(point a, charact b) : coord(a), tab(b) {};
 		~castle() {};
-		friend class defbuilding <tower>;
+		friend class defbuilding;
 		int gethealth() { return tab.health; }
 		int getmaxhealth() { return tab.maxhealth; }
 		string getname() { return tab.getname(); }
 		int getx() { return coord.getx(); }
 		int gety() { return coord.gety(); }
 		int getgold() { return tab.getgold(); }
+		void addgold(int a) { tab.gold += a; }
 		charact getstcast() { return stcast; }
-	    void buy(defbuilding <tower>);
-		void buy(defbuilding <magictower>);
-		void buy(defbuilding <magictrap>);
+	    void buy(defbuilding);
 		int takedamage(enemy);
 	};
 
@@ -107,10 +120,12 @@ namespace Prog4
 		void settime(int i, int k) { time[i].t+=k; }
 		void setcoord(point a) { coord = a; }
 		void setmap(int i, enemy en, int a) { time[i] = { en, a }; }
+		int getx() { return coord.getx(); }
+		int gety() { return coord.gety(); }
 		int gettime(int i) { return time[i].t; }
 		enemy getenemy(int i) { return time[i].enen; }
-		void make(enemy);
-		void makebytime();
+		// make(enemy);
+		//void makebytime();
 	};
 
 	class board
@@ -118,10 +133,6 @@ namespace Prog4
 	private:
 		point size;
 		cell **field;
-		/*vector <enemy> en;
-		vector <defbuilding<magictower>> mt;
-		vector <defbuilding<magictrap>> mtr;
-		vector <defbuilding<tower>> t;*/
 	public:
 		board(point a);
 		~board() { delete[] field; }
@@ -139,11 +150,10 @@ namespace Prog4
 		bool iscorrect();
 		void printsize() const;
 		void printfield() const;
-		void printall(vector <defbuilding<tower>> &v1, vector <defbuilding<magictower>> &v2, vector <defbuilding<magictrap>> &v3, vector <enemy> &env) const;
+		void printall(vector <defbuilding> &v1, vector <defbuilding> &v2, vector <defbuilding> &v3, vector <enemy> &env) const;
 		point findcast();
 		point finddun(int a);
-		template<class T>
-		defbuilding<T> findtower(vector <defbuilding<T>> &v1, int x, int y);
+		defbuilding findtower(vector <defbuilding> &v1, int x, int y);
 	};
 }
 
